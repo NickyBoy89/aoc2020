@@ -34,7 +34,7 @@ func main() {
 
   }
 
-  for _, first := range inputNumbers {
+  for _, first := range inputNumbers { // Since we are not finding two numbers, a triple-nested for loop seems easiest, although it runs at O(n^3)
     for _, second := range inputNumbers {
       for _, third := range inputNumbers {
         if (first + second + third == 2020) {

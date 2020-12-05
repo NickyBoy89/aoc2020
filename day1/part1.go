@@ -21,23 +21,21 @@ func main() {
     fmt.Print("> ")
     text, _ := reader.ReadString('\n')
     // convert CRLF to LF
-    text = strings.Replace(text, "\n", "", -1)
+    text = strings.Replace(text, "\n", "", -1) // Reads input from STDIN, not the most convenient way, but works
 
     inputs = append(inputs, text)
 
     if strings.Compare("end", text) == 0 {
       inputs = inputs[:len(inputs) - 1]
       inputNumbers = stringArrayToIntArray(inputs)
-      sort.Ints(inputNumbers)
+      sort.Ints(inputNumbers) // Uses quicksort, means a O(n log(n)) average
       break
     }
-
-
 
   }
 
   for _, element := range inputNumbers {
-    if (inputNumbers[sort.SearchInts(inputNumbers, getComplement(element))] == getComplement(element)) {
+    if (inputNumbers[sort.SearchInts(inputNumbers, getComplement(element))] == getComplement(element)) { // Binary search, O(log(n))
       fmt.Println(element * getComplement(element))
     }
   }

@@ -22,7 +22,7 @@ func main() {
 
     matched := re.FindAllString(val, 2)
 
-    if (len(matched) < 2) {
+    if (len(matched) < 2) { // Maybe this is needed based off whether the input file has a newline at the end?
       continue
     }
 
@@ -39,7 +39,7 @@ func main() {
       }
     }
 
-    if (binaryRep(suffix[countMin + 1] == targetChar) + binaryRep(suffix[countMax + 1] == targetChar) == 1) {
+    if (binaryRep(suffix[countMin] == targetChar) + binaryRep(suffix[countMax] == targetChar) == 1) { // Pseudo-XOR operation, works only because there are three possible results
       validPasswords++
     }
 
