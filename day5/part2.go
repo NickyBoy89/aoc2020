@@ -8,7 +8,13 @@ import (
 
 func main() {
 
-  var maxId int = 0
+  var ids []int
+
+  seatMap := make([][]int, 127)
+
+  for i, _ := range seatMap {
+    seatMap[i] = []int{0, 0, 0, 0, 0, 0, 0, 0}
+  }
 
   input, err := ioutil.ReadFile("input")
   check(err)
@@ -27,13 +33,22 @@ func main() {
 
     seatId := row * 8 + column
 
-    if (seatId > maxId) {
-      maxId = seatId
-    }
+    seatMap[row][column] = 1
+
+    ids = append(ids, seatId)
 
   }
 
-  fmt.Println(maxId)
+  // fmt.Println(ids)
+
+  for i, seat := range seatMap {
+    for k, j := range seat {
+      if (j == 0) {
+        fmt.Println(k)
+      }
+    }
+    fmt.Println(seat, i)
+  }
 
 }
 
@@ -41,6 +56,24 @@ func check(err error) {
   if (err != nil) {
     panic(err)
   }
+}
+
+func abs(num int) int {
+  if (num < 0) {
+    return num * -1
+  } else {
+    return num
+  }
+}
+
+func contains(slice []int, value int) bool {
+  for _, i := range slice {
+    if (value == i) {
+      return true
+    }
+  }
+
+  return false
 }
 
 func binaryGuess(directions string, lower rune, low, high int) int {
