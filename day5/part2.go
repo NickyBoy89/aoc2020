@@ -4,17 +4,12 @@ import (
   "fmt"
   "io/ioutil"
   "strings"
+  "sort"
 )
 
 func main() {
 
   var ids []int
-
-  seatMap := make([][]int, 127)
-
-  for i, _ := range seatMap {
-    seatMap[i] = []int{0, 0, 0, 0, 0, 0, 0, 0}
-  }
 
   input, err := ioutil.ReadFile("input")
   check(err)
@@ -33,21 +28,18 @@ func main() {
 
     seatId := row * 8 + column
 
-    seatMap[row][column] = 1
-
     ids = append(ids, seatId)
 
   }
 
-  // fmt.Println(ids)
+  sort.Ints(ids)
 
-  for i, seat := range seatMap {
-    for k, j := range seat {
-      if (j == 0) {
-        fmt.Println(k)
-      }
+  fmt.Println(ids)
+
+  for _, i := range ids {
+    if (!containedIn(ids, i + 1) && containedIn(ids, i + 2)) {
+      fmt.Println(i + 1)
     }
-    fmt.Println(seat, i)
   }
 
 }
@@ -58,22 +50,15 @@ func check(err error) {
   }
 }
 
-func abs(num int) int {
-  if (num < 0) {
-    return num * -1
+func containedIn(array []int, element int) bool {
+  if (element > len(array)) {
+    return false
+  }
+  if (array[sort.SearchInts(array, element)] == element) { // Binary search
+    return true
   } else {
-    return num
+    return false
   }
-}
-
-func contains(slice []int, value int) bool {
-  for _, i := range slice {
-    if (value == i) {
-      return true
-    }
-  }
-
-  return false
 }
 
 func binaryGuess(directions string, lower rune, low, high int) int {
