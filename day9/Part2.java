@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Scanner;
+
 import java.util.List;
 
-public class Part1 {
+public class Part2 {
 
   private static String[] readFile(String fileName) {
 
@@ -49,6 +50,43 @@ public class Part1 {
     return false;
   }
 
+  private Long[] findContiguousSet(Long target, String[] input) {
+
+    long shortest = 0L;
+    long longest = 0L;
+    long currentSum = 0L;
+
+      for (int i = 0; i < input.length; i++) {
+
+        for (String j : Arrays.copyOfRange(input, i, input.length)) {
+
+            if (Long.valueOf(j) < shortest || shortest == 0) {
+                shortest = Long.valueOf(j);
+            }
+
+            if (Long.valueOf(j) > longest) {
+                longest = Long.valueOf(j);
+            }
+
+            if (currentSum + Long.valueOf(j) == target && Long.valueOf(j) != target) {
+                return new Long[] {shortest, longest};
+            } else if (currentSum + Long.valueOf(j) > target) {
+                shortest = 0;
+                longest = 0;
+                currentSum = 0;
+                break;
+            }
+
+            currentSum += Long.valueOf(j);
+            // System.out.println(currentSum);
+        }
+
+      }
+
+      throw new Error("No continous set found in range");
+
+  }
+
   private void moveToNext(Long num) {
 
     // Removes the first element of the list, and adds the specified one to the end
@@ -58,7 +96,7 @@ public class Part1 {
 
   private LinkedList<Long> currentPreamble;
 
-  public Part1(String[] preambleString) {
+  public Part2(String[] preambleString) {
 
     this.currentPreamble = new LinkedList<>();
 
@@ -72,18 +110,20 @@ public class Part1 {
 
     String[] input = readFile("input");
     
-    Part1 part1 = new Part1(Arrays.copyOfRange(input, 0, 25));
+    Part2 part2 = new Part2(Arrays.copyOfRange(input, 0, 25));
 
     // Cut out the values that were already used
-    input = Arrays.copyOfRange(input, 25, input.length);
+    String[] workingSet = Arrays.copyOfRange(input, 25, input.length);
 
-    for (String i : input) {
+    for (String i : workingSet) {
 
-      if (!part1.preambleContainsSum(Long.parseLong(i))) {
-        System.out.println(i);
+      if (!part2.preambleContainsSum(Long.parseLong(i))) {
+        Long[] result =  part2.findContiguousSet(Long.valueOf(i), input);
+
+        System.out.printf("%d + %d: %d\n", result[0], result[1], result[0] + result[1]);
       }
 
-      part1.moveToNext(Long.parseLong(i));
+      part2.moveToNext(Long.parseLong(i));
     }
 
   }
