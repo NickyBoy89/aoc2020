@@ -6,62 +6,50 @@ public class Part2 {
 
     final int[] adapterList;
 
+    HashMap<Integer, Long> knownBranches = new HashMap<>();
+
     Part2(int[] adapterList) {
         this.adapterList = adapterList;
     }
 
-    private int[] validAdapters(int rating) {
+    private int validAdapterIndexes(int adapterIndex) {
+      int curIndex = adapterIndex;
 
-        ArrayList<Integer> valid = new ArrayList<>();
+      for (;curIndex < this.adapterList.length && this.adapterList[curIndex] <= this.adapterList[adapterIndex] + 3;) {
+        curIndex++;
+      }
 
-        for (int i = 0; i < this.adapterList.length && this.adapterList[i] <= rating + 3; i++) { // Makes sure that all adapters are at most 3 jolts higher than the target
-            if (this.adapterList[i] > rating && this.adapterList[i] != rating) { // Filters out all adapters that are lower than the current adapter's rating
-                valid.add(adapterList[i]);
-            }
-        }
-
-        int[] result = new int[valid.size()];
-        for (int i = 0; i < valid.size(); i++) {
-            result[i] = valid.get(i);
-        }
-
-        return result;
+      return curIndex;
 
     }
 
-    private int countBranches(int adapter, int total) {
+    private long countBranches(int adapter) {
 
-        int[] valid = validAdapters(adapter);
+      if (adapter == this.adapterList.length - 1) { // Adapter is at end of list
+        return 1; // End of branch
+      }
 
-        if (valid.length == 0) {
-            return total + 1; // Accounts for end of branch
-        } else if (valid.length > 1) {
-            return this.countAllBranches(valid, total);
-        }
+      if (this.knownBranches.containsKey(adapter)) { // Branch has already been cached
+        return this.knownBranches.get(adapter);
+      }
 
-        return countBranches(valid[0], total);
-    }
+      long ans = 0;
 
-    private int countAllBranches(int[] adapters, int total) {
+      for (int newAdapter = adapter + 1; newAdapter < this.validAdapterIndexes(adapter); newAdapter++) {
+        ans += this.countBranches(newAdapter);
+      }
 
-        int counter = 0;
+      this.knownBranches.put(adapter, ans);
 
-        for (int adapter : adapters) {
-            counter += countBranches(adapter, total);
-        }
-
-        return counter;
+      return ans;
     }
 
     public static void main(String[] args) {
 
-        int[] input = Helpers.stringArrayToIntArray(Helpers.readFile("input"));
+      int[] input = Helpers.stringArrayToIntArray(Helpers.readFile("input"), true);
 
-        Arrays.sort(input);
+      var part2 = new Part2(input);
 
-        Part2 part2 = new Part2(input);
-
-        System.out.println(part2.countBranches(0, 0));
-
+      System.out.println(part2.countBranches(0));
     }
 }
